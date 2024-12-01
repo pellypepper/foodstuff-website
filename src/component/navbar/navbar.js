@@ -37,7 +37,7 @@ export default function Navbar({ cart, setCart, setSearchQuery }) {
             <div className="container-fluid">
                 <div className="row h-100">
                     <div className="logo-wrapper col-6">
-                        <Link to="/">logo</Link>
+                        <Link to="/">FoodStuff</Link>
                     </div>
                     <nav className="col-6 d-flex justify-content-end">
                         <button onClick={handleSearch} className="rounded-pill">

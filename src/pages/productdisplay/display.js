@@ -11,6 +11,7 @@ export default function ProductDisplay() {
     const location = useLocation();
     const product = location.state?.product || {};
     const navigate = useNavigate();
+    
 
     const rating = Math.floor(Math.random() * 5) + 1;
     const stars = Array.from({ length: 5 }, (v, i) => (i < rating ? solidStar : regularStar));
@@ -41,6 +42,22 @@ export default function ProductDisplay() {
 
     // Navigate to checkout page
     const handleCheckout = () => {
+        const existingProduct = cart.find(item => item.name === product.name);
+
+        let updatedCart;
+        if (existingProduct) {
+            // Update the quantity of the existing product
+            updatedCart = cart.map(item =>
+                item.name === product.name
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
+            );
+        } else {
+            // Add the new product to the cart
+            updatedCart = [...cart, { ...product, quantity: 1 }];
+        }
+    
+        updateCart(updatedCart);
         navigate("/checkout");
     };
 

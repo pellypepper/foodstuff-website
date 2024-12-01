@@ -5,10 +5,13 @@
 background-color: var(--font-light-color);
 
 }
-
+.product-wrapper{
+ 
+}
 .product-image img, .product-text{
     height: 500px;
     border-radius: 10px;
+
 }
 .product-image img{
     width: 100%;
@@ -111,7 +114,7 @@ background-color: var(--font-light-color);
 }
 
 .product-text .btn:hover {
-    background-color: darken(var(--primary-color), 10%); /* Slightly darker on hover */
+    
     transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
@@ -156,10 +159,7 @@ background-color: var(--font-light-color);
 }
 
 @media  screen and (max-width: 481px) {
-    .product-image img, .product-text{
-        height: 400px;
-    
-    }
+ 
     .product-text h1{
 
         font-size: var(--mob-xl);

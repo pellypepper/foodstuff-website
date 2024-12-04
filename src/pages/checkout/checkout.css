@@ -9,7 +9,7 @@
 
 .checkout-container {
     display: grid;
-
+   
     gap: 2rem;
     width: 100%;
     max-width: 1200px;
@@ -24,6 +24,7 @@
 }
 .cart-section,
 .checkout-form-section {
+    height: max-content;
     flex: 1;
     padding: 1rem;
     border: 2px solid var(--primary-color);

@@ -1,8 +1,8 @@
 .cart-main{
-
+border-radius: 10px;
 
     width: 70%;
-    box-shadow: inset 0 0 10px 0 rgba(0,0,0,.5);
+
     bottom: 0;
     height: 100%;
     position: absolute;
@@ -19,16 +19,17 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
+    
  
 }
-.cart-section{
+.cart-main .cart-section{
     flex: 1;
     height: 100%;
     padding: 1rem;
     display: flex;
      
     flex-direction: column;
-    border: 2px solid white;
+
     height: 100%;
 
    
@@ -94,7 +95,6 @@
 .cart-item-controls input {
     width: 50px;
     padding: 0.2rem;
-    border: 1px solid var(--primary-color);
     border-radius: 5px;
     text-align: center;
 }

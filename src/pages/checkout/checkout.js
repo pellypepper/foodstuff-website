@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../component/navbar/navbar";
 import Footer from "../../component/footer/footer";
 import Country from "../../component/search/country";
@@ -10,6 +10,7 @@ export default function Checkout() {
     const loadCart = () => JSON.parse(localStorage.getItem("cart")) || [];
     const [cart, setCart] = useState(loadCart());
     const navigate = useNavigate();
+    const [alertMessage, setAlertMessage] = useState(""); // State for alert message
 
     const [form, setForm] = useState({
         firstname: "",
@@ -17,7 +18,6 @@ export default function Checkout() {
         email: "",
         number: "",
         address: "",
-        paymentMethod: "credit-card",
         shippingMethod: "standard",
         total: 0,
     });
@@ -34,12 +34,14 @@ export default function Checkout() {
         localStorage.setItem("cart", JSON.stringify(newCart));
     };
 
-    // Remove product from cart
+ 
     const removeFromCart = (index) => {
+        const productName = cart[index].name; // Get the product name for the alert
         const updatedCart = cart.filter((_, i) => i !== index);
         updateCart(updatedCart);
-        alert("Item removed from cart");
+        setAlertMessage(`${productName} has been removed from the cart.`); // Set alert message
     };
+
 
     // Calculate the total cost including shipping fee
     const calculateTotal = () => {
@@ -64,8 +66,24 @@ export default function Checkout() {
     const handleOrderSubmit = (e) => {
         e.preventDefault();
         const total = calculateTotal();
-        navigate("/payment", { state: { total } });
+        navigate("/payment", { state: { total ,cart, form} });
     };
+    const [fadeOut, setFadeOut] = useState(false);
+    useEffect(() => {
+        if (alertMessage) {
+            const timer = setTimeout(() => {
+                setFadeOut(true); // Trigger fade out
+                const removeAlertTimer = setTimeout(() => {
+                    setAlertMessage(""); // Clear the alert after fade out
+                    setFadeOut(false); // Reset fade out state
+                }, 500); // Match this time with the CSS transition duration
+
+                return () => clearTimeout(removeAlertTimer);
+            }, 5000); // Keep alert message visible for 5 seconds
+
+            return () => clearTimeout(timer); // Cleanup the timer on unmount
+        }
+    }, [alertMessage]);
 
     return (
         <main className="checkout-section">
@@ -94,6 +112,11 @@ export default function Checkout() {
                                 ))
                             )}
                         </div>
+                        {alertMessage && (
+                <div className={`alert-popup ${fadeOut ? 'alert-popup-exit' : ''}`}>
+                    {alertMessage}
+                </div>
+            )}
                         <div className="shipping-wrapper">
                             <h3>Shipping Method</h3>
                             <ShippingMethod

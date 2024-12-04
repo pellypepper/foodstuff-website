@@ -68,13 +68,13 @@ export default function ProductDisplay() {
             </section>
             <section className="product-section my-4 container">
            
-                    <div className="product-wrapper row p-4 ">
-                        <div className="product-image col-12 col-md-6">
-                            <img src={product.img} className="w-100" alt={product.name} />
+                    <div className="product-wrapper p-4 ">
+                        <div className="product-image ">
+                            <img src={product.img}  alt={product.name} />
                         </div>
-                        <div className="product-text mt-4 mt-md-0 col-12 col-md-6">
+                        <div className="product-text mt-4 mt-md-0 ">
                             <h1>{product.name}</h1>
-                            <h3>Price: ${product.price.toFixed(2)}</h3>
+                            <span>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</span>
                             <div className="rating">
                                 {stars.map((star, index) => (
                                     <FontAwesomeIcon key={index} icon={star} className="star" />

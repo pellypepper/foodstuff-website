@@ -6,14 +6,23 @@ background-color: var(--font-light-color);
 
 }
 .product-wrapper{
- 
+  display: grid;
+  grid-template-columns: 50% 50%;
+
+
+}
+.product-section .product-image {
+
+    width: 100%;
 }
 .product-image img, .product-text{
     height: 500px;
     border-radius: 10px;
-
+    
+ 
 }
 .product-image img{
+
     width: 100%;
     object-fit: cover;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -198,7 +207,14 @@ background-color: var(--font-light-color);
 }
     
 }
-
+@media screen and (max-width: 768px) {
+    .product-wrapper{
+   
+        grid-template-columns: 100%;
+      
+      
+      }
+}
 @media  screen and (min-width: 1024px) {
     .product-text h1{
 

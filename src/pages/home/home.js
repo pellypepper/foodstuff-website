@@ -7,55 +7,108 @@ import { FaWhatsapp } from "react-icons/fa";
 
 export default function Home() {
     const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
-    const [searchQuery, setSearchQuery] = useState(""); // State for search query
-    const [alertMessage, setAlertMessage] = useState(""); // State for alert message
+    const [searchQuery, setSearchQuery] = useState("");
+    const [alertMessage, setAlertMessage] = useState("");
+    const [products, setProducts] = useState([]);
 
-    const products = Array.from({ length: 50 }, (_, index) => ({
-        id: index + 1,
-        img: "/product.jpg",
-        name: `Product ${index + 1}`,
-        price: 20,
-    }));
-
-    const addToCart = (product, quantity) => {
+    const addToCart = async (product, quantity) => {
         const existingProductIndex = cart.findIndex(item => item.name === product.name);
         let updatedCart;
 
         if (existingProductIndex > -1) {
+            // Update quantity if product exists
             updatedCart = cart.map((item, index) =>
                 index === existingProductIndex
                     ? { ...item, quantity: item.quantity + parseInt(quantity) }
                     : item
             );
         } else {
+            // Add new product to cart
             updatedCart = [...cart, { ...product, quantity: parseInt(quantity) }];
         }
 
-        setCart(updatedCart);
-        localStorage.setItem("cart", JSON.stringify(updatedCart));
-        setAlertMessage(`${product.name} has been added to the cart.`); // Set alert message
+        setCart(updatedCart); // Update the local cart state
+        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
+
+        try {
+            // Send updated cart or new item to backend
+            await fetch("http://localhost:4000/cart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ product, quantity }),
+            });
+            setAlertMessage(`${product.name} has been added to the cart.`);
+        } catch (error) {
+            console.error("Error updating cart on server:", error);
+        }
     };
 
+    const removeFromCart = async (productName) => {
+        const updatedCart = cart.filter(item => item.name !== productName);
+        setCart(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
 
+        try {
+            await fetch("http://localhost:4000/cart", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ productName }),
+            });
+            setAlertMessage(`${productName} has been removed from the cart.`);
+        } catch (error) {
+            console.error("Error removing item from server:", error);
+        }
+    };
 
-    const [fadeOut, setFadeOut] = useState(false); 
+    useEffect(() => {
+        const fetchCart = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/cart");
+                const cartData = await response.json();
+                setCart(cartData); // Sync the cart state
+            } catch (error) {
+                console.error("Error fetching cart:", error);
+            }
+        };
 
-useEffect(() => {
-    if (alertMessage) {
-        const timer = setTimeout(() => {
-            setFadeOut(true); 
-            const removeAlertTimer = setTimeout(() => {
-                setAlertMessage(""); 
-                setFadeOut(false);
-            }, 500); 
+        fetchCart();
+    }, []);
 
-            return () => clearTimeout(removeAlertTimer);
-        }, 5000); // Keep alert message visible for 5 seconds
+    const [fadeOut, setFadeOut] = useState(false);
 
-        return () => clearTimeout(timer); // Cleanup the timer on unmount
-    }
-}, [alertMessage]);
+    useEffect(() => {
+        if (alertMessage) {
+            const timer = setTimeout(() => {
+                setFadeOut(true);
+            }, 5000);
 
+            return () => clearTimeout(timer);
+        } else {
+            setFadeOut(false);
+        }
+    }, [alertMessage]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/products");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch products");
+                }
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                alert("Could not fetch products. Please try again later.");
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     return (
         <main className="Home">
@@ -81,16 +134,16 @@ useEffect(() => {
                 <ProductSlider
                     products={products}
                     addToCart={addToCart}
+                    removeFromCart={removeFromCart} // Ensure to pass the remove function
                     searchQuery={searchQuery} // Pass the search query to ProductSlider
                 />
             </section>
 
             {alertMessage && (
-    <div className={`alert-popup ${fadeOut ? 'alert-popup-exit' : ''}`}>
-        {alertMessage}
-    </div>
-)}
-
+                <div className={`alert-popup ${fadeOut ? 'alert-popup-exit' : ''}`}>
+                    {alertMessage}
+                </div>
+            )}
 
             <section className="footer mt-5">
                 <Footer />

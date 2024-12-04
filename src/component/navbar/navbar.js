@@ -1,14 +1,18 @@
-import React, { useRef} from "react";
+import React, {  useRef} from "react";
 import { FaSearch, FaTimes, FaBars, FaUser, FaShoppingCart } from "react-icons/fa";
 import "./navbar.css";
 import Cart from "../cart/cart";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ cart, setCart, setSearchQuery }) {
     const menuRef = useRef(null);
     const searchRef = useRef(null);
     const loginRef = useRef(null);
     const cartRef = useRef(null);
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const navigate = useNavigate();
 
     const handleClick = () => {
         menuRef.current.classList.toggle("active");
@@ -30,6 +34,13 @@ export default function Navbar({ cart, setCart, setSearchQuery }) {
     };
     const handleLoginClose = () => {
         loginRef.current.classList.remove("active");
+    };
+    const handleForm = (e) => {
+        e.preventDefault();
+        if (email === 'popsyasnat@gmail.com' && password === '123456') {
+            alert('Login Successful');
+            navigate('/admin');
+        }
     };
 
     return (
@@ -92,9 +103,13 @@ export default function Navbar({ cart, setCart, setSearchQuery }) {
                     <FaTimes onClick={handleLoginClose} className="times" />
                     <h3>LOGIN</h3>
                     <p className="border"></p>
-                    <form>
-                        <input placeholder="Email Address" type="email" />
-                        <input placeholder="Password" type="password" />
+                    <form onClick={handleForm}>
+                        <input placeholder="Email Address" 
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email} type="email" />
+                        <input placeholder="Password" value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type="password" />
                         <div className="remember-wrapper">
                             <div className="d-flex">
                                 <input type="checkbox" />
@@ -102,7 +117,7 @@ export default function Navbar({ cart, setCart, setSearchQuery }) {
                             </div>
                             <a href="/">Forgot Password</a>
                         </div>
-                        <button>Submit</button>
+                        <button type="submit">Submit</button>
                     </form>
                 </div>
             </div>

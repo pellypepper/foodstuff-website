@@ -24,7 +24,8 @@ const ProductCard = ({ product, addToCart }) => {
             />
             <div className="card-body">
                 <p className="card-title">{product.name}</p>
-                <span className="card-text">${product.price.toFixed(2)}</span>
+                <span>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</span>
+
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();

@@ -5,7 +5,7 @@ import './detail.css';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useLocation } from "react-router-dom";
 
-export default function Detail({ calculateTotal }) {
+export default function Detail () {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
 
